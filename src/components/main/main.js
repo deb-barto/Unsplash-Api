@@ -1,37 +1,45 @@
-import React from "react";
+import React, {useState} from "react";
+import reactDOM from "react-dom";
+import axios from "axios";
 import './main.css'
 
 
 function Main() {
  
+ const [photo,setPhoto] = useState("");
+ const [clientId, setClientId] = useState ("cGwNrV7VFY0H8dzHSPArh5HBWK9UCN_acFydNNYPsWA");
+
+ const [result,setResult] = useState([]);
  
+ function handleChange(event){
+    setPhoto(event.target.value)
+ }
+ function handleSubmit(event){
+     console.log(photo);
+     const url ="https://api.unsplash.com/search/photos?page=1&query="+photo+"&client_id="+clientId;
+
+     axios.get(url)
+     .then((response)=>{
+         console.log(response)
+         setResult(response.data.results)
+     })
+ }
+
     return (
-        <div className="cards-container">
-            <div className="js1 total">
-              <div className="imagem">
-                  <a href="https://gifted-mcnulty-cc0887.netlify.app/" className="gb">
-                      <h3 className="titlecard">Drum Rock</h3>
-                   </a>
-               </div>
+    <div className="container">  
+        <div className="header">
+            <h1 className='title'>Search for COOL Photos</h1>
+            <div className="input">
+            <input onChange={handleChange} type="text" name="photo" placeholder="Search for photos" className="search"/>
+            <button onClick={handleSubmit} className="submit" type="submit">Search</button>
             </div>
-
-            <div className="js2 total">
-              <div className="imagem">
-                  <a href="https://fervent-wozniak-392feb.netlify.app/" className="gb">
-                      <h3 className="titlecard">Let's Draw </h3>
-                  </a>
-              </div>
-            </div>
-            <div className="js3 total">
-                <div className="imagem">
-                    <a href="https://elastic-spence-9012c4.netlify.app/" className="gb">
-                        <h3 className="titlecard">Quizz do Milhão</h3>
-                    </a>
-                </div>
-            </div>
-
-      </div>
-       
+        </div>
+        <div className="cards">
+            {result.map((photo)=>(
+                <img className="photos"src={photo.urls.small} alt="photoResult"/>
+            ))}
+        </div>
+    </div>      
   );
 }
 
